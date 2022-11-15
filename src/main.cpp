@@ -18,15 +18,12 @@ int main(int argc,char ** argv){
         //Vetor de com o somatorio das notas de cada show
         vector<double> Valuations = vector<double>(NumShows, 0);
 
-        cout << NumFriends << " amigos | shows " << NumShows << endl;
-
         //Passa em cada linha referente às notas de um amigo
         for(int i = 0; i<NumFriends; i++){
             //recolhe as notas desse amigo e soma no show
             for(int j = 0; j<NumShows; j++){
                 double value = 0;
                 cin >> value;
-                cout << "value: " << value << endl;
                 Assert(((value<=5)&&(value>= (-5))),"invalid assessment!");
 
                 //Soma o valor no somatório do show
@@ -35,8 +32,9 @@ int main(int argc,char ** argv){
         }
 
         //Aplica o algoritmo de subvetor de soma máxima
-        SubVetorzin max_sum = SubVetorMaxSum(Valuations, 0, (Valuations.size()) - 1);
-        cout << max_sum.left + 1 << " " << max_sum.right + 1 << endl;
+        SubVetorzin SubVetMaxSum = SubVetorMaxSum(Valuations, 0, (Valuations.size()) - 1);
+        //Imprime o intervalo em que se encontra o subvetor de maior soma
+        cout << SubVetMaxSum.left + 1 << " " << SubVetMaxSum.right + 1 << endl;
 
     }
         

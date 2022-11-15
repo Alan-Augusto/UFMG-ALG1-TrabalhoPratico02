@@ -1,10 +1,10 @@
 #include <functions.hpp>
 
 //_____FUNÇÕES GERAIS___
-    //Maximo de 3
-    double maximus (double a, double b, double c){
-        if(a>=b){
-            if(a>=c){
+    //Maior SUbvetor entre 3
+    SubVetorzin MaxSumOfThreeSubVet(SubVetorzin a, SubVetorzin b, SubVetorzin c){
+        if(a.sum>=b.sum){
+            if(a.sum>=c.sum){
                 return a;
             }
             else{
@@ -13,7 +13,7 @@
         }
         else
         {
-            if(b>=c){
+            if(b.sum>=c.sum){
                 return b;
             }
             else{
@@ -21,6 +21,7 @@
             }
         }
     }
+
     //Conferências gerais
     void Assert(bool x, string text){
         if(!x){
@@ -58,83 +59,96 @@ SubVetorzin::SubVetorzin(int Inpleft, int InpRight, double InpSum){
 
 //_____ALGORITMO - SUBVETOR DE SOMA MAXIMA_______
 SubVetorzin IntersectionMaxSum(vector<double> vet, int Inpleft, int middle, int InpRight){
-    double sum = 0;
-    double LeftSum = -139157123;
-    int LeftID = middle;
-    
-    /*
-    int i = middle;
-    while(i >= Inpleft){
-        sum = sum + vet[i];
-        if (sum > LeftSum){
-            LeftSum = sum;
-            LeftID = i;
+    //ANÁLISE DO LADO ESQUERDO
+        //Variáveis principais
+        double sum = 0;
+        double sumPartialAuxCount = 0;
+        double LeftSum = -139157123; //Seta com um valor muito baixo para que não cause problemas
+        int LeftID = middle; //Setamos a esqueda do subvetor como o meio dele - a priori
+        
+        //iterador começa no meio
+        int i = middle;
+        //Varremos o subvetor até a esquerda
+        while(i >= Inpleft){
+            //Fazemos a soma dos elementos
+            sum = sum + vet[i];
+            sumPartialAuxCount ++;
+            //Comparamos com a última soma
+            if (sum >= LeftSum){
+                //Se a soma atual for maior que a última maior soma, atualizamos o valor da ultima maior soma
+                LeftSum = sum;
+                //Guardamos o ID do elemento que faz sentidoe star na soma
+                LeftID = i;
+                //Reajustamos a contagem parcial
+                while(sumPartialAuxCount>LeftID){
+                    sumPartialAuxCount--;
+                }
+            }
+            //Redução do iterador
+            i--;
+        }
+    //ANÁLISE DO LADO DIREITO
+        //Reseta a soma temporária
+        sum = 0;
+        double RightSum = -139157123; //Pequeno valor para não prejudicart
+        int RightID = middle;  //Setamos a direita do subvetor como o meio dele - a priori
+
+        //iterador começa no meio
+        int j = middle;
+        //Varremos o subvetor até a direita
+        while(j <= InpRight){
+            //Fazemos a soma dos elementos
+            sum = sum + vet[j];
+             //Comparamos com a última soma
+            if (sum >= RightSum) {
+                //Se a soma atual for maior que a última maior soma, atualizamos o valor da ultima maior soma
+                RightSum = sum;
+                //Guardamos o ID do elemento que faz sentido estar na soma
+                RightID = j;
+            }
+            //Acresce o iterador
+            j++;
         }
 
-        i--;
-    }
-    */
+    //CONCLUSEOS
+        //Encontramos a soma dos elementos em interseção
+        double middleSum = LeftSum + RightSum - vet[middle];
 
-    for (int i = middle; i >= Inpleft; i--) {
-        sum = sum + vet[i];
-        if (sum > LeftSum){
-            LeftSum = sum;
-            LeftID = i;
-        }
-    }
+        //Criamos um subvetor para cada intervalo em questão
+        SubVetorzin LeftSub(LeftID, middle, LeftSum);
+        SubVetorzin RightSub(middle , RightID, RightSum);
+        SubVetorzin MiddleSub(LeftID, RightID, middleSum);
 
-    sum = 0;
-    double RightSum = -139157123;
-    int RightID = middle;
-    for (int i = middle; i <= InpRight; i++) {
-        sum = sum + vet[i];
-        if (sum > RightSum) {
-            RightSum = sum;
-            RightID = i;
-        }
-    }
-
-    double middleSum = LeftSum + RightSum - vet[middle];
-    double bigger = maximus(middleSum, LeftSum, RightSum);
-    
-    SubVetorzin intervalo;
-    
-    if (bigger == middleSum) {
-        intervalo = { LeftID, RightID, middleSum };
-    }
-    else if (bigger == LeftSum) {
-        intervalo = { LeftID, middle, LeftSum };
-    } 
-    else {
-        intervalo = { middle , RightID, RightSum };
-    }
-    return intervalo;
+        //Retornamos o subvetor com maior soma
+        return MaxSumOfThreeSubVet(LeftSub, RightSub, MiddleSub);
 }
 
 SubVetorzin SubVetorMaxSum(vector<double> vet, int Inpleft, int InpRight){
-    if (Inpleft > InpRight) {
-        SubVetorzin intervalo = {Inpleft, InpRight, 0 };
-        return intervalo;
-    }
+    //CONDIÇÕES DE PARADA
+        //Se o indicies se ultrapassarem
+        if (Inpleft > InpRight) {
+            SubVetorzin intervalo = {Inpleft, InpRight, -139157123 };
+            return intervalo;
+        }
 
-    if (Inpleft == InpRight) {
-        SubVetorzin intervalo = {Inpleft, InpRight, vet[Inpleft] };
-        return intervalo;
-    }
+        //Se os índicies se encontrarem  
+        if (Inpleft == InpRight) {
+            SubVetorzin intervalo = {Inpleft, InpRight, vet[Inpleft] };
+            return intervalo;
+        }
 
-    int m = (Inpleft + InpRight) / 2;
+    //CASOS BASE
+        //####--DIVISÃO E CONQUISTA--####
+            //Encontramos o meio do vetor
+            int MiddleVet = (Inpleft + InpRight) / 2;
 
-    SubVetorzin SubvetLeft = SubVetorMaxSum(vet, Inpleft, m - 1);
-    SubVetorzin SubvetRight = SubVetorMaxSum(vet, m + 1, InpRight);
-    SubVetorzin SubvetMiddle = IntersectionMaxSum(vet, Inpleft, m, InpRight);
-    double bigger = maximus(SubvetMiddle.sum, SubvetLeft.sum, SubvetRight.sum);
-
-    if (bigger == SubvetMiddle.sum) {
-        return SubvetMiddle;
-    } else if (bigger == SubvetLeft.sum) {
-        return SubvetLeft;
-    } else {
-        return SubvetRight;
-    }
+            //Encontramos o subvetor de maior soma em cada lado
+            SubVetorzin SubvetLeft = SubVetorMaxSum(vet, Inpleft, MiddleVet - 1);
+            SubVetorzin SubvetRight = SubVetorMaxSum(vet, MiddleVet + 1, InpRight);
+            //Encontramos o subvetor de maior soma na interseção entre os lados
+            SubVetorzin SubvetMiddle = IntersectionMaxSum(vet, Inpleft, MiddleVet, InpRight);
+            
+        //Após ter os maiores subvetores em cada lado e na interseção, pegamos o maior entre eles
+        return MaxSumOfThreeSubVet(SubvetMiddle, SubvetLeft, SubvetRight);
 }
 
