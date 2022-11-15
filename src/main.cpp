@@ -1,5 +1,4 @@
 #include <functions.hpp>
-#include <vector>
 
 using namespace std;
 
@@ -34,6 +33,11 @@ int main(int argc,char ** argv){
                 Valuations[j]+= value;
             }
         }
+
+        //Aplica o algoritmo de subvetor de soma máxima
+        SubVetorzin max_sum = SubVetorMaxSum(Valuations, 0, (Valuations.size()) - 1);
+        cout << max_sum.left + 1 << " " << max_sum.right + 1 << endl;
+
     }
         
     return 0;

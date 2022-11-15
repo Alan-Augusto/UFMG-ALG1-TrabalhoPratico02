@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string.h>
+#include <vector>
 
 using namespace std;
 
@@ -17,9 +18,12 @@ class SubVetorzin{
     
     //Construtores
     SubVetorzin();
-    SubVetorzin(int Inpleft, int Inpright, double Inpsum);
+    SubVetorzin(int Inpleft, int InpRight, double Inpsum);
 
     //Métodos
     //...
 };
 
+//FUNÇÕES DO ALGORITMO PRINCIPAL
+SubVetorzin IntersectionMaxSum(vector<double> vet, int Inpleft, int midle, int InpRight);
+SubVetorzin SubVetorMaxSum(vector<double> vet, int Inpleft, int InpRight);
